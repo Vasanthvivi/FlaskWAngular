@@ -1,0 +1,37 @@
+.dashboard-main-wrapper{
+    background-color: #4f1377;
+    background-image: linear-gradient(315deg, #38045a 0%, #1e379c 74%);
+    min-height: 100vh;
+    height: auto;
+}
+.contents-wrapper{
+    padding: 20px;
+}
+.todo-delete-icon:hover{
+    color: rgba(0, 0, 0, 0.6);
+    border-color: transparent;
+    background: rgba(0, 0, 0, 0.04);
+}
+.user-panel-wrapper{
+    padding: 6px;
+}
+.todo-operations{
+    margin-top: -6px;
+}
+.todo-operations > button{
+    margin-right: 5px;
+}
+.add-todo-wrapper > button{
+    margin-top: -8px;
+    margin-right: 20px;
+}
+.todo-build-portion{
+    padding: 20px;
+}
+.todo-build-portion > *{
+    padding: 10px;
+}
+p-panel::ng-deep{
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+}

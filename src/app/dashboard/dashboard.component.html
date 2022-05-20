@@ -1,0 +1,50 @@
+<div class="dashboard-main-wrapper">
+   <div>
+      <p-toast position="top-right"></p-toast>
+   </div>
+   <div class="nav-pane-wrapper">
+      <div class="user-panel-wrapper">
+         <p-panel>
+             <h4 style="display: inline-block;">{{global.currentUser}}&nbsp;[<span>{{global.currentUserTodosCount}}</span>]</h4>
+             <div *ngIf="selectedTodos.length != 0" class="todo-operations" style="float: right;">
+                 <button (click)="selectAll()" pButton pRipple type="button" label="Select All" class="p-button-raised p-button-text" styleClass="p-button-sm"></button>
+                 <button (click)="deselectAll()" pButton pRipple type="button" label="DeSelect All" class="p-button-raised p-button-text" styleClass="p-button-sm"></button>
+                 <button (click)="deleteSelected()" pButton pRipple type="button" label="Delete Selected" class="p-button-raised p-button-text" styleClass="p-button-sm"></button>
+             </div>
+             <div *ngIf="selectedTodos.length == 0" class="add-todo-wrapper" style="float: right;">
+               <button (click)="showAddTodo()" pTooltip="Add Todo" tooltipPosition="left" pButton pRipple type="button" icon="pi pi-plus" class="p-button-lg p-button-rounded"></button>
+               <button (click)="signOut()" pTooltip="SignOut" tooltipPosition="left" pButton pRipple type="button" icon="pi pi-sign-out" class="p-button-lg p-button-rounded"></button>
+             </div>
+         </p-panel>
+     </div>
+   </div>
+   <div class="contents-wrapper">
+     <ng-container *ngFor="let todo of todos" >
+      <p-panel [header]="todo.todo" [toggleable]="true">
+         <ng-template pTemplate="icons" style="padding-right: 9px;">
+            <p-checkbox class="pi p-ripple p-element p-panel-header-icon todo-delete-icon" name="groupname" [value]="todo.todoId" [(ngModel)]="selectedTodos"></p-checkbox>
+            <i (click)="confirmToDelete(todo.todoId)" class="pi pi-times p-ripple p-element p-panel-header-icon todo-delete-icon"></i>
+         </ng-template>
+         <p>{{todo.todoDescription}}</p>
+      </p-panel>
+     </ng-container>
+   </div>
+</div>
+<p-dialog header="Create ToDo" [(visible)]="showTodoDialog" [modal]="true" [style]="{width: '50vw'}" [maximizable]="false"
+    [draggable]="false" [resizable]="false">
+    <div class="todo-build-portion">
+      <span class="p-float-label">
+         <input id="float-input" type="text" pInputText [(ngModel)] = "todoTitle"> 
+         <label for="float-input">Title</label>
+      </span>
+      <span class="p-float-label">
+         <textarea id="float-input" rows="6" cols="65" pInputTextarea [(ngModel)]="todoDescription"></textarea>
+         <label for="float-input">Summary</label>
+      </span>
+    </div>
+   <ng-template pTemplate="footer">
+      <p-button icon="pi pi-check" (click)="createTodo()" label="Create ToDo" styleClass="p-button-text"></p-button>
+   </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="right" [baseZIndex]="10000" rejectButtonStyleClass="p-button-outlined"></p-confirmDialog>

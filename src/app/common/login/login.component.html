@@ -1,0 +1,102 @@
+<div class="login-wrapper">
+  <p-toast position="top-right"></p-toast>
+  <div class="login-user-input-portion">
+    <div *ngIf="isSignUpPage" class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card border-0 shadow rounded-3 my-5">
+            <div class="card-body p-4 p-sm-5">
+              <h5 class="card-title text-center mb-5 fw-light fs-5">SIGNUP</h5>
+              <form>
+                <div class="form-floating mb-3">
+                  <span class="p-float-label">
+                    <input id="float-input" style="width:inherit"  type="text" pInputText [(ngModel)]="userName" name="username"> 
+                    <label for="float-input">Username</label>
+                  </span>
+                </div>
+                <div class="form-floating mb-3">
+                  <span class="p-float-label">
+                    <input id="float-input" style="width:inherit" type="password" pInputText [(ngModel)]="password" name="password"> 
+                    <label for="float-input">Password</label>
+                  </span>
+                </div>
+                <div class="d-grid text-center mb-3">
+                  <button class="btn btn-primary btn-login text-uppercase fw-bold" (click)="authenticate()"
+                    type="submit">SIGNUP</button>
+                </div>
+                <div class="d-grid">
+                  <button style="padding: 5px;" pButton (click)="switchPage('login')" type="button" label="Already have an account?" class="p-button-sm p-button-raised p-button-rounded"></button>
+                  <!-- <p (click)="switchPage('login')" class="login-link">Already have an account?</p> -->
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isLoginPage" class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card border-0 shadow rounded-3 my-5">
+            <div class="card-body p-4 p-sm-5">
+              <h5 class="card-title text-center mb-5 fw-light fs-5">LOGIN</h5>
+              <form>
+                <div class="form-floating mb-3">
+                  <span class="p-float-label">
+                    <input id="float-input" type="text" style="width:inherit" pInputText [(ngModel)]="userName" name="username"> 
+                    <label for="float-input">Username</label>
+                  </span>
+                </div>
+                <div class="form-floating mb-3">
+                  <span class="p-float-label">
+                    <input id="float-input" type="text" pInputText style="width:inherit" [(ngModel)]="password" name="password"> 
+                    <label for="float-input">Password</label>
+                  </span>
+                </div>
+                <div class="d-grid text-center mb-3">
+                  <button class="btn btn-primary btn-login text-uppercase fw-bold" (click)="authenticate()"
+                    type="submit">LOGIN</button>
+                </div>
+                <div class="d-grid">
+                  <button  pButton (click)="switchPage('signup')" type="button" label="Dont have an account?" class="p-button-sm p-button-raised p-button-rounded"></button>
+                  <button style="margin-top: 5px; margin-left: 5px;" pButton (click)="switchPage('forgotpassword')" type="button" label="Forgot Password?" class="p-button-sm p-button-raised p-button-rounded"></button>
+                  <!-- <p (click)="switchPage('signup')" class="text-start login-link">Dont have an account?</p>
+                  <p (click)="switchPage('forgotpassword')" class="text-end login-link" style="float: left;">Forgot Password?</p> -->
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isForgotPasswordPage" class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card border-0 shadow rounded-3 my-5">
+            <div class="card-body p-4 p-sm-5">
+              <!-- <h5 class="card-title text-center mb-5 fw-light fs-5">LOGIN</h5> -->
+              <form>
+                <div class="form-floating mb-3">
+                  <span class="p-float-label">
+                    <input id="float-input" type="text" pInputText style="width:inherit" [(ngModel)]="userName" name="username"> 
+                    <label for="float-input">Username</label>
+                  </span>
+                </div>
+                <div class="d-grid text-center mb-3">
+                  <button class="btn btn-primary btn-login text-uppercase fw-bold" (click)="forgotPassword()"
+                    type="submit">Get Password</button>
+                </div>
+                <div class="d-grid">
+                  <button style="padding: 5px;" pButton (click)="switchPage('login')" type="button" label="Login" class="p-button-sm p-button-raised p-button-rounded"></button>
+                  <button style="padding: 5px;margin-left: 5px;" pButton (click)="switchPage('signup')" type="button" label="SignUp" class="p-button-sm p-button-raised p-button-rounded"></button>
+                  <!-- <p (click)="switchPage('login')" class="text-start login-link">Login</p>
+                  <p (click)="switchPage('signup')" class="text-end login-link" style="float: left;">SignUp</p> -->
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
