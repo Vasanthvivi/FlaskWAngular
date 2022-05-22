@@ -23,10 +23,15 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {TableModule} from 'primeng/table';
 import {BlockUIModule} from 'primeng/blockui';
 import {MultiSelectModule} from 'primeng/multiselect';
+import {FieldsetModule} from 'primeng/fieldset';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    BrowserModule,
+    BrowserAnimationsModule,
     TableModule,
     HttpClientModule,
     MultiSelectModule,
@@ -39,7 +44,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
     TooltipModule,
     DialogModule,
     InputTextModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    FieldsetModule,
   ],
   declarations: [DashboardComponent, LoginComponent, NavigationPaneComponent, ContentComponent, HeaderComponent],
   providers: [RestService, GlobalService, DashboardGuard, 

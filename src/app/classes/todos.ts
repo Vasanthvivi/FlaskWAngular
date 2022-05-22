@@ -3,4 +3,5 @@ export class Todo{
     public userId:number = 0;
     public todo:string = "";
     public todoDescription:string = "";
+    public status:string = "";
 }

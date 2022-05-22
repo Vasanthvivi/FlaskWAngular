@@ -5,17 +5,24 @@
    <div class="nav-pane-wrapper">
       <div class="user-panel-wrapper">
          <p-panel>
-            <h4 style="display: inline-block;">{{global.currentUser}}&nbsp;<span
-                  *ngIf="global.isAdmin == false">[{{global.currentUserTodosCount}}]</span></h4>
+            <h2 *ngIf="global.isAdmin == false" style="display: inline-block; color: #1f5c91;">{{global.currentUser}}&nbsp;
+            </h2>
+               <span *ngIf="global.isAdmin == false">
+                  <p style="display: inline;">
+                     TOTAL TODOS&nbsp;:&nbsp;{{global.currentUserTodosCount}}
+                  </p>
+               </span>
+            <h2 *ngIf="global.isAdmin" style="display: inline-block; color: #1f5c91;">A&nbsp;D&nbsp;M&nbsp;I&nbsp;N
+            </h2>
             <!-- User Panel -->
-            <div *ngIf="selectedTodos.length != 0" class="todo-operations" style="float: right;">
+            <!-- <div *ngIf="selectedTodos.length != 0" class="todo-operations" style="float: right;">
                <button (click)="selectAll()" pButton pRipple type="button" label="Select All"
                   class="p-button-raised p-button-text" styleClass="p-button-sm"></button>
                <button (click)="deselectAll()" pButton pRipple type="button" label="DeSelect All"
                   class="p-button-raised p-button-text" styleClass="p-button-sm"></button>
                <button (click)="deleteSelected()" pButton pRipple type="button" label="Delete Selected"
                   class="p-button-raised p-button-text" styleClass="p-button-sm"></button>
-            </div>
+            </div> -->
             <div *ngIf="global.isAdmin == true" class="todo-operations" style="float: right;">
                <button pButton pRipple type="button" [label]="'Total Todos '+global.globalTodosCount"
                   class="p-button-raised p-button-info p-button-text" style="width: 225px;"></button>
@@ -24,7 +31,7 @@
                <button pButton (click)="adminSignOut()" pTooltip="Signout" tooltipPosition="top" pRipple type="button"
                   icon="pi pi-sign-out" class="p-button-rounded p-button-text"></button>
             </div>
-            <div *ngIf="selectedTodos.length == 0 && global.isAdmin == false" class="add-todo-wrapper"
+            <div *ngIf="global.isAdmin == false" class="add-todo-wrapper"
                style="float: right;">
                <button (click)="showAddTodo()" pTooltip="Add Todo" tooltipPosition="left" pButton pRipple type="button"
                   icon="pi pi-plus" class="p-button-lg p-button-raised p-button-rounded"></button>
@@ -36,21 +43,25 @@
          </p-panel>
       </div>
    </div>
-   <div *ngIf="global.isAdmin == false" class="contents-wrapper">
+   <ng-container *ngIf="global.isAdmin == false" class="contensts-wrapper">
       <ng-container *ngFor="let todo of todos">
          <div class="todo-panel-wrapper">
-            <p-panel [header]="todo.todo" [toggleable]="true" id="todo-header-wrapper">
+            <p-panel [header]="todo.todo" [toggleable]="true" [transitionOptions]="'500ms'" id="todo-header-wrapper">
                <ng-template pTemplate="icons" style="padding-right: 9px;" class="todo-panel-header">
-                  <p-checkbox class="pi p-ripple p-element p-panel-header-icon todo-delete-icon" name="groupname"
-                     [value]="todo.todoId" [(ngModel)]="selectedTodos"></p-checkbox>
-                  <i (click)="confirmToDelete(todo.todoId)"
-                     class="pi pi-times p-ripple p-element p-panel-header-icon todo-delete-icon"></i>
+                  <p *ngIf="todo.status.toLowerCase() == 'pending'" style="text-transform: uppercase; display: contents; color: red;">{{todo.status}}</p>
+                  <p *ngIf="todo.status.toLowerCase() == 'completed'" style="text-transform: uppercase; display: contents; color: rgb(12, 4, 52);">{{todo.status}}</p>
+                  <!-- <p-checkbox class="pi p-ripple p-element p-panel-header-icon todo-delete-icon" name="groupname"
+                     [value]="todo.todoId" [(ngModel)]="selectedTodos"></p-checkbox> -->
+                  <i *ngIf="todo.status.toLowerCase() == 'pending'" pTooltip="Mark As Completed" tooltipPosition="top" (click)="confirmToModify(todo.todoId, todo.status)"
+                     class="pi  pi-check p-ripple p-element p-panel-header-icon todo-delete-icon"></i>
+                  <i *ngIf="todo.status.toLowerCase() == 'completed'" pTooltip="Mark As Pending" tooltipPosition="top" (click)="confirmToModify(todo.todoId, todo.status)"
+                     class="pi  pi-times p-ripple p-element p-panel-header-icon todo-delete-icon"></i>
                </ng-template>
-               <p>{{todo.todoDescription}}</p>
+               <p style="padding-left: 20px; font-family: monospace; font-size:larger">{{todo.todoDescription}}</p>
             </p-panel>
          </div>
       </ng-container>
-   </div>
+   </ng-container>
    <!-- Admin Panel -->
    <div *ngIf="global.isAdmin == true" class="admin-content-wrapper">
       <p-panel header="Users" [toggleable]="false" id="user-table-wrapper">
@@ -59,7 +70,7 @@
             <p-button (click)="addUserDialog = true" label="New User" type="button" icon="pi pi-plus"
                styleClass="p-button-text" ></p-button>
          </div>
-         <p-table id="my-table" #dt1 *ngIf="currentUsers.length > 0" [columns]="selectedColumns" dataKey="userId" [value]="currentUsers" [globalFilterFields]="['userName','numberOfTodos','userId']"
+         <p-table #dt1 *ngIf="currentUsers.length > 0" [columns]="selectedColumns" dataKey="userId" [value]="currentUsers" [globalFilterFields]="['userName','numberOfTodos','userId']"
             styleClass="p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
             [paginator]="currentUsers.length > 0" [rows]="10" [showCurrentPageReport]="currentUsers.length > 0"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -112,9 +123,9 @@
                      <i [pTooltip]="'Edit '+user.userName" tooltipPosition="top"
                         (click)="getUserCredentialsToEdit(user.userId)" class="pi pi-user-edit edit-icon"
                         style="cursor: pointer;"></i>
-                     <i pTooltip="Remove" tooltipPosition="left" (click)="removeUser(user.userId)"
+                     <i [pTooltip]="'Remove '+user.userName" tooltipPosition="top" (click)="removeUser(user.userId)"
                         class="pi pi-user-minus edit-icon" style="cursor: pointer;"></i>
-                     <i pTooltip="Add ToDo" (click)="addToDoForUser(user.userId)" class="pi pi-plus edit-icon"
+                     <i pTooltip="Add ToDo" tooltipPosition="top" (click)="addToDoForUser(user.userId)" class="pi pi-plus edit-icon"
                         style="cursor: pointer;"></i>
                   </td>
                </tr>
@@ -137,6 +148,8 @@
                   </th>
                   <th pSortableColumn="todoDescription">Description <p-sortIcon field="todoDescription"></p-sortIcon>
                   </th>
+                  <th pSortableColumn="todoDescription">Status <p-sortIcon field="todoDescription"></p-sortIcon>
+                  </th>
                </tr>
             </ng-template>
             <ng-template pTemplate="body" let-todo>
@@ -153,6 +166,7 @@
                            class="pi pi-minus edit-icon" style="cursor: pointer;"></i>
                      </div>
                   </td>
+                  <td>{{todo.status}}</td>
                </tr>
             </ng-template>
          </p-table>
@@ -161,7 +175,7 @@
    </tr>
    </ng-template>
    <ng-template pTemplate="paginatorleft">
-      <p-button (click)="addUserDialog = true" label="New User" type="button" icon="pi pi-plus"
+      <p-button (click)="addUserDialog = true" label="New User" pTooltip="Add New User" tooltipPosition="top" type="button" icon="pi pi-plus"
          styleClass="p-button-text"></p-button>
    </ng-template>
    <ng-template pTemplate="paginatorright">
@@ -175,6 +189,7 @@
    </p-panel>
 </div>
 </div>
+<!-- HAS BEEN MODIFIED -->
 <!-- creating todos -->
 <p-dialog header="Create ToDo" [(visible)]="showTodoDialog" [modal]="true" [style]="{width: '50vw'}"
    [maximizable]="false" [draggable]="false" [resizable]="false">
@@ -185,7 +200,7 @@
       </span>
       <span class="p-float-label">
          <textarea id="float-input" rows="6" cols="65" pInputTextarea [(ngModel)]="todoDescription"></textarea>
-         <label for="float-input">Summary</label>
+         <label for="float-input">ToDo Description</label>
       </span>
    </div>
    <ng-template pTemplate="footer">
@@ -260,3 +275,4 @@
       </p-button>
    </ng-template>
 </p-dialog>
+

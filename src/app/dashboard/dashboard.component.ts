@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
 
   makeTodos(){
     for(let i=0; i<this.todosTemp.length; i++){
-      let todo:Todo = { todoId: this.todosTemp[i][0], userId: this.todosTemp[i][1], todo: this.todosTemp[i][2], todoDescription: this.todosTemp[i][3] }
+      let todo:Todo = { todoId: this.todosTemp[i][0], userId: this.todosTemp[i][1], todo: this.todosTemp[i][2], todoDescription: this.todosTemp[i][3], status: this.todosTemp[i][4] }
       this.todos[i] = todo
     }
     console.log("todos done")
@@ -123,7 +123,7 @@ export class DashboardComponent implements OnInit {
     }else{
       let payload = {  }
       if(this.global.isAdmin){
-        payload = { "title" : this.todoTitle, "description" : this.todoDescription, "userId" : this.adminSelectedUserId }
+        payload = { "title" : this.todoTitle, "description" : this.todoDescription, "userId" : this.adminSelectedUserId, "status" : "pending" }
       }else{
         payload = { "title" : this.todoTitle, "description" : this.todoDescription, "userId" : this.global.userId }
       }
@@ -134,7 +134,7 @@ export class DashboardComponent implements OnInit {
             let result = JSON.parse(JSON.stringify(response))["message"]
             let t = JSON.parse(JSON.stringify(response))["createdTodo"]
             this.global.globalTodosCount = JSON.parse(JSON.stringify(response))["totalTodos"]
-            let todo:Todo = { todoId: t[0][0], userId: t[0][1], todo: t[0][2], todoDescription : t[0][3] }
+            let todo:Todo = { todoId: t[0][0], userId: t[0][1], todo: t[0][2], todoDescription : t[0][3], status: t[0][4] }
             this.updateTodo(todo)
             this.showTodoDialog=false
             this.unblockDoc()
@@ -167,23 +167,43 @@ export class DashboardComponent implements OnInit {
     
   }
 
-  confirmToDelete(todoId:number) {
+  confirmToModify(todoId:number, status:string) {
+    let msg = "";
+    if(status.toLowerCase() == "pending"){
+      msg = "Mark as completed?"
+    }else{
+      msg = "Mark as pending?"
+    }
     this.confirmationService.confirm({
-        message: 'Remove ToDo?',
+        message: msg,
         header: 'Confirmation',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.restService.deleteTodos([todoId]).subscribe({
-            next: ((response) => {
-              let numberOfDeletedTodos = JSON.parse(JSON.stringify(response))["numberOfDeletedData"] 
-              console.log(numberOfDeletedTodos + "has been deleted!")
-              this.messageService.add({ severity:'success', detail: `${numberOfDeletedTodos} deleted!`, life:2000});
-              this.initialize()
-            }),
-            error: ((error) => {
-               alert(error.error.message)
+          this.blockDoc();
+          if(status.toLowerCase() == "pending"){
+            this.restService.markAsComplete([todoId]).subscribe({
+              next: ((response) => {
+                this.messageService.add({ severity:'success', detail: `Modified!!`, life:2000});
+                this.initialize()
+              }),
+              error: ((error) => {
+                this.messageService.add({ severity:'success', detail: `${error.error.message}`, life:2000});
+                this.unblockDoc()
+              })
             })
-          })
+          }else{
+            this.restService.markAsPending([todoId]).subscribe({
+              next: ((response) => {
+                this.messageService.add({ severity:'success', detail: `Modified!!`, life:2000});
+                this.initialize()
+              }),
+              error: ((error) => {
+                this.messageService.add({ severity:'success', detail: `${error.error.message}`, life:2000});
+                this.unblockDoc()
+              })
+            })
+          }
+          
         },
         reject: () => {
             
@@ -468,6 +488,10 @@ export class DashboardComponent implements OnInit {
     { field: 'numberOfTodos', header: 'Number Of Todos' },
     { field: 'userId', header: 'UserId' }]
     return cols
+  }
+
+  markAsCompleted(){
+    
   }
 
 //   exportPdf() {

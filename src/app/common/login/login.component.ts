@@ -155,7 +155,7 @@ export class LoginComponent implements OnInit {
       for(let j = 0; j < todos.length;j++){
         if(userId == todos[j][1]){
           nots++;
-          let todo:Todo = { todoId:todos[j][0], userId:todos[j][1], todo: todos[j][2], todoDescription: todos[j][3] }
+          let todo:Todo = { todoId:todos[j][0], userId:todos[j][1], todo: todos[j][2], todoDescription: todos[j][3], status:todos[j][4] }
           todostemp.push(todo)
         }
       }
@@ -163,9 +163,7 @@ export class LoginComponent implements OnInit {
       this.global.globalUsers.push(user);
     }
 
-    console.log(this.global.globalUsers)
     this.global.token = JSON.parse(JSON.stringify(response))["token"]
-    console.log(`token ${this.global.token}`)
     this.global.isLoggedIn = true;
     this.global.login.next(true)
     this.global.currentUser = this.userName

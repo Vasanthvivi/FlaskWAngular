@@ -57,6 +57,14 @@ export class RestService {
   editTodo(payload: Object){
     return this.http.post("http://localhost:5000/api/edit-todo", payload)
   }
+
+  markAsComplete(todos:number[]){
+    return this.http.post("http://localhost:5000/api/mark-as-complete", { "todos" : todos })
+  }
+
+  markAsPending(todos:number[]){
+    return this.http.post("http://localhost:5000/api/mark-as-pending", { "todos" : todos })
+  }
   
 }
 

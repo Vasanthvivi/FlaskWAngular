@@ -4,7 +4,7 @@ import jwt
 import datetime
 from dbConfig import sql
 
-app.config["secret-key"] = "thisisatokensecret"
+app.config["secret-key"] = "secretkeyoftaskmanagementapplication"
 currentUsers = []
 
 
@@ -23,7 +23,7 @@ def login():
             userId = cursor.fetchall()[0][0]
             generatedToken = jwt.encode(
                 {"username": username, "password": password,
-                 "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=20)},
+                 "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
                 app.config["secret-key"], algorithm="HS256")
             if username == "admin" or username == "Admin":
                 cursor.execute(f"select * from users")
@@ -31,10 +31,10 @@ def login():
                 cursor.execute(f"select * from todos")
                 todosData = cursor.fetchall()
                 payload = {"token": generatedToken, "userId": userId, "users": userData, "todos": todosData,
-                           "expiry": datetime.datetime.utcnow() + datetime.timedelta(minutes=20)}
+                           "expiry": datetime.datetime.utcnow() + datetime.timedelta(minutes=60)}
             else:
                 payload = {"token": generatedToken, "userId": userId,
-                           "expiry": datetime.datetime.utcnow() + datetime.timedelta(minutes=20)}
+                           "expiry": datetime.datetime.utcnow() + datetime.timedelta(minutes=60)}
             return makeResponse(payload, 201)
     except Exception as e:
         payload = {"message": "Internal Server Error!"}
@@ -66,10 +66,10 @@ def signUp():
         if dbResponse == 1:
             generatedToken = jwt.encode(
                 {"username": username, "password": password,
-                 "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=20)},
+                 "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
                 app.config["secret-key"], algorithm="HS256")
             payload = {"token": generatedToken, "message": "user created!", "userId": userId,
-                       "expiry": datetime.datetime.utcnow() + datetime.timedelta(minutes=20)}
+                       "expiry": datetime.datetime.utcnow() + datetime.timedelta(minutes=60)}
             return makeResponse(payload, 201)
     except Exception as e:
         payload = {"message": "Internal Server Error!"}
@@ -173,9 +173,9 @@ def createTodo():
         sqlobj = sql.connect()
         cursor = sqlobj.cursor()
         try:
-            [userId, title, description] = [request.json["userId"], request.json["title"], request.json["description"]]
+            [userId, title, description, status] = [request.json["userId"], request.json["title"], request.json["description"], request.json["status"]]
             dbResponse = cursor.execute(
-                f"insert into todos(fk_userid, todo, todo_description) values(\"{userId}\", \"{str(title)}\",\"{str(description)}\")")
+                f"insert into todos(fk_userid, todo, todo_description, status) values(\"{userId}\", \"{str(title)}\",\"{str(description)}\", \"{status}\")")
             todoid = cursor.lastrowid
             sqlobj.commit()
             if dbResponse == 1:
@@ -355,3 +355,55 @@ def removeTodo():
             sqlobj.close()
     else:
         return makeResponse({"message": "unauthorized!"}, 401)
+
+
+
+@app.route("/api/mark-as-complete", methods=["POST"])
+def markAsCompleted():
+    sqlobj = sql.connect()
+    cursor = sqlobj.cursor()
+    try:
+        token = request.headers["Token"]
+    except Exception as e:
+        return makeResponse({"message": "unauthorized!"}, 401)
+    if isValidToken(token):
+        try:
+            todos = request.json["todos"]
+            todosSize = len(todos)
+            for todoid in todos:
+                cursor.execute(f"update todos set status = \"completed\" where todoid = \"{todoid}\"")
+                sqlobj.commit()
+            return makeResponse({"message": "deleted successfully!", "numberOfModifiedData": todosSize}, 200)
+        except Exception as e:
+            return makeResponse({"message": "Internal Server Error!"}, 500)
+        finally:
+            cursor.close()
+            sqlobj.close()
+    else:
+        return makeResponse({"message": "unauthorized"}, 401)
+
+
+@app.route("/api/mark-as-pending", methods=["POST"])
+def markAsPending():
+    sqlobj = sql.connect()
+    cursor = sqlobj.cursor()
+    try:
+        token = request.headers["Token"]
+    except Exception as e:
+        return makeResponse({"message": "unauthorized!"}, 401)
+    if isValidToken(token):
+        try:
+            todos = request.json["todos"]
+            todosSize = len(todos)
+            for todoid in todos:
+                cursor.execute(f"update todos set status = \"pending\" where todoid = \"{todoid}\"")
+                sqlobj.commit()
+            return makeResponse({"message": "deleted successfully!", "numberOfModifiedData": todosSize}, 200)
+        except Exception as e:
+            return makeResponse({"message": "Internal Server Error!"}, 500)
+        finally:
+            cursor.close()
+            sqlobj.close()
+    else:
+        return makeResponse({"message": "unauthorized"}, 401)
+
