@@ -5,7 +5,7 @@
     height: auto;
 }
 .contents-wrapper{
-    padding: 20px;
+    padding: 25px;
 }
 .todo-delete-icon:hover{
     color: rgba(0, 0, 0, 0.6);
@@ -31,7 +31,44 @@
 .todo-build-portion > *{
     padding: 10px;
 }
-p-panel::ng-deep{
+.user-edit-portion > *{
+    padding: 10px;
+}
+:host ::ng-deep p-panel{
     padding-bottom: 3px;
     margin-bottom: 10px;
+}
+:host ::ng-deep .todo-panel-wrapper{
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+}
+.nav-pane-wrapper{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+:host ::ng-deep .admin-content-wrapper{
+    padding: 8px;
+}
+
+:host ::ng-deep .todo-table-wrapper{
+    background-color: grey;
+}
+
+:host ::ng-deep .main-table-wrapper:hover{
+   background-color: rgb(72, 112, 151);
+   color: white;
+}
+
+:host ::ng-deep .edit-icon:hover{
+    color:white;
+    background-color: #4f1377;
+}
+
+:host ::ng-deep .edit-icon{
+    padding:10px;
+}
+:host ::ng-deep .p-datatable .p-datatable-gridlines .p-datatable-header{
+    border-width: 0;
 }

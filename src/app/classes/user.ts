@@ -1,5 +1,8 @@
-class User{
+import { Todo } from "./todos";
+
+export class User{
+    public userId:number = 0;
     public userName:string = "";
-    public todosCount:number = 0;
-    public todos:string[] = [];
+    public numberOfTodos: number = 0;
+    public todos:Todo[] = [];
 }

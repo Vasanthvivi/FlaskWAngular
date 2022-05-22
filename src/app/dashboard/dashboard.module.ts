@@ -20,11 +20,17 @@ import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {TableModule} from 'primeng/table';
+import {BlockUIModule} from 'primeng/blockui';
+import {MultiSelectModule} from 'primeng/multiselect';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    TableModule,
     HttpClientModule,
+    MultiSelectModule,
+    BlockUIModule,
     InputTextareaModule,
     PanelModule,
     ButtonModule,

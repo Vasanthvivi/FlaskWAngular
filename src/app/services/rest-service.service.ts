@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { GlobalService } from './global.service';
 
 @Injectable({
@@ -33,8 +34,29 @@ export class RestService {
     return this.http.post("http://localhost:5000/api/deleteTodos", payload)
   }
 
-  buildTodo(payload:any){
+  buildTodo(payload:Object){
     return this.http.post("http://localhost:5000/api/createTodo", payload)
   }
+
+  editUser(payload:Object):Observable<Object>{
+    return this.http.post("http://localhost:5000/api/edit-user", payload)
+  }
+   
+  removeUser(payload:Object){
+    return this.http.post("http://localhost:5000/api/remove-user", payload)
+  }
+
+  addUser(payload:Object){
+    return this.http.post("http://localhost:5000/api/add-user", payload)
+  }
+
+  logAdmin(payload:Object){
+    return this.http.post("http://localhost:5000/api/auth/admin-login", payload)
+  }
+
+  editTodo(payload: Object){
+    return this.http.post("http://localhost:5000/api/edit-todo", payload)
+  }
+  
 }
 
